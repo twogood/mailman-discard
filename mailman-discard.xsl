@@ -14,25 +14,6 @@
     </xsl:for-each>
   </xsl:template>
 
-  <!--
-  <xsl:template match="tr">
-  </xsl:template>
-
-  <xsl:template match="td">
-    <xsl:text>fnurra</xsl:text>
-    <xsl:value-of select="table/tbody/tr/td"/>
-    <xsl:apply-templates/>
-  </xsl:template>
-    -->
-
-  <!--
-  <xsl:template match="item[enclosure/@type = 'audio/mpeg']">
-    <xsl:value-of select="title"/>
-    <xsl:text>;</xsl:text>
-    <xsl:value-of select="enclosure/@url"/>
-  </xsl:template>
-  -->
-
   <xsl:template match="*">
   </xsl:template>
 
