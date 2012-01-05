@@ -15,6 +15,7 @@ fi
 set -e
 COOKIE_JAR=$0.cookies
 OUTPUT_FILE=$0.output
+FORM_FILE=$0.form
 
 rm -f $COOKIE_JAR
 
@@ -43,15 +44,12 @@ fi
 
 tidy -quiet $OUTPUT_FILE 2>/dev/null |
 xmllint --html --format --xmlout - |
-xsltproc --novalid `dirname $0`/mailman-discard.xsl - > $0.form
+xsltproc --novalid `dirname $0`/mailman-discard.xsl - > $FORM_FILE
  
-#mv $OUTPUT_FILE x
-#--trace-ascii y 
-
-curl --fail --silent -o $OUTPUT_FILE -b $COOKIE_JAR -d submit="Submit All Data" -d discardalldefersp=0 -d @$0.form $URL
+curl --fail --silent -o $OUTPUT_FILE -b $COOKIE_JAR -d submit="Submit All Data" -d discardalldefersp=0 -d @$FORM_FILE $URL
 
 if grep -q "There are no pending requests." $OUTPUT_FILE; then
-  rm $OUTPUT_FILE $COOKIE_JAR
+  rm $OUTPUT_FILE $COOKIE_JAR $FORM_FILE
   exit 0
 fi
 
