@@ -18,11 +18,14 @@ OUTPUT_FILE=$0.output
 FORM_FILE=$0.form
 
 rm -f $COOKIE_JAR
+	
+trap "rm -f $OUTPUT_FILE $COOKIE_JAR $FORM_FILE; exit" INT TERM EXIT
 
-if curl --fail --silent -o $OUTPUT_FILE -c $COOKIE_JAR -d adminpw="$PASSWORD" -d adminlogin="Let me in..." $URL; then
+if curl --fail --silent --show-error --include -o $OUTPUT_FILE -c $COOKIE_JAR -d adminpw="$PASSWORD" -d adminlogin="Let me in..." $URL; then
     :
 else
   echo "Failed to retreive $URL" >&2
+  test -f $OUTPUT_FILE && cat $OUTPUT_FILE
   exit 18
 fi
 
@@ -38,7 +41,8 @@ if grep -q "There are no pending requests." $OUTPUT_FILE; then
 fi
 
 if ! grep -q "Discard all messages marked" $OUTPUT_FILE; then
-  echo "Unexpected response, see $OUTPUT"
+  echo "**** Unexpected response ****"
+  test -f $OUTPUT_FILE && cat $OUTPUT_FILE
   exit 30
 fi
 
@@ -53,6 +57,7 @@ if grep -q "There are no pending requests." $OUTPUT_FILE; then
   exit 0
 fi
 
-echo "Unexpected response, see $OUTPUT_FILE"
+echo "**** Unexpected response ****"
+test -f $OUTPUT_FILE && cat $OUTPUT_FILE
 exit 40
 
