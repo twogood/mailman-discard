@@ -24,6 +24,10 @@ trap "rm -f $OUTPUT_FILE $COOKIE_JAR $FORM_FILE; exit" INT TERM EXIT
 if curl --fail --silent --show-error --include -o $OUTPUT_FILE -c $COOKIE_JAR -d adminpw="$PASSWORD" -d adminlogin="Let me in..." $URL; then
     :
 else
+  if test -f $OUTPUT_FILE && grep -q 'curl: (56) SSL read: error:00000000:lib(0):func(0):reason(0), errno 104$' $OUTPUT_FILE; then 
+    exit 17
+  fi
+
   echo "Failed to retreive $URL" >&2
   test -f $OUTPUT_FILE && cat $OUTPUT_FILE
   exit 18
